@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sierpinski Triangle - Interactive</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; }
+        canvas { border: 2px solid #333; background: white; margin: 20px; }
+        controls { margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Sierpinski Triangle</h1>
+    <p>Interactive recursive version. Drag slider for depth (gaps appear as you increase).</p>
+    <input type="range" id="depth" min="0" max="8" value="5" step="1">
+    <span id="depthValue">Depth: 5</span>
+    <br><br>
+    <canvas id="canvas" width="600" height="520"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const depthSlider = document.getElementById('depth');
+        const depthValue = document.getElementById('depthValue');
+
+        function drawSierpinski(x, y, size, depth) {
+            if (depth === 0) {
+                ctx.beginPath();
+                ctx.moveTo(x, y + size);
+                ctx.lineTo(x + size, y + size);
+                ctx.lineTo(x + size/2, y);
+                ctx.closePath();
+                ctx.fillStyle = '#1a1a1a';
+                ctx.fill();
+                return;
+            }
+            const h = size / 2;
+            drawSierpinski(x, y + h, h, depth - 1);
+            drawSierpinski(x + h, y + h, h, depth - 1);
+            drawSierpinski(x + h/2, y, h, depth - 1);
+        }
+
+        function render(depth) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawSierpinski(50, 50, 500, depth);
+        }
+
+        depthSlider.addEventListener('input', () => {
+            const d = parseInt(depthSlider.value);
+            depthValue.textContent = `Depth: ${d}`;
+            render(d);
+        });
+
+        // Initial render
+        render(5);
+    </script>
+</body>
+</html>
